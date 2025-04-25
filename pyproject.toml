@@ -1,0 +1,26 @@
+[project]
+name = "phone-checker"
+version = "0.1.0"
+authors = [
+  { name = "TakiMoysha", email = "takimoysha@users.noreply.github.com" },
+]
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "asyncio>=0.27.0",
+  "anyio>=4.9.0",
+  "dishka>=1.5.3",
+  "django>=5.2",
+  "httpx>=0.28.1",
+  "psycopg>=3.2.6",
+  "psycopg-binary>=3.2.6",
+  "django-ninja>=1.4.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "pytest-django>=4.11.1",
+]
+

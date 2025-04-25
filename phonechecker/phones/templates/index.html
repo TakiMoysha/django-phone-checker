@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %} Phone Checker {% endblock %}
+
+{% block content %}
+  <h1>Contact Us</h1>
+  <form method="post">
+    {% csrf_token %} {% for field in form %}
+    <div class="form-group">{{ field.label }} {{ field }}</div>
+    {% endfor %}
+    <small id="emailHelp" class="form-text text-muted"
+      >We'll never share your email with anyone else.</small
+    >
+    <button class="btn btn-primary" type="submit" name="button">Send</button>
+  </form>
+{% endblock %}
