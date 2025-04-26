@@ -1,9 +1,6 @@
 [project]
 name = "phone-checker"
 version = "0.1.0"
-authors = [
-  { name = "TakiMoysha", email = "takimoysha@users.noreply.github.com" },
-]
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -12,13 +9,14 @@ dependencies = [
   "anyio>=4.9.0",
   "dishka>=1.5.3",
   "django>=5.2",
-  "httpx>=0.28.1",
+  "httpx[http2,socks]>=0.28.1",
   "psycopg>=3.2.6",
   "psycopg-binary>=3.2.6",
   "django-ninja>=1.4.1",
   "django-background-tasks>=1.2.8",
   "phonenumbers>=9.0.4",
   "django-stubs>=5.1.3",
+  "aiofiles>=24.1.0",
 ]
 
 [dependency-groups]

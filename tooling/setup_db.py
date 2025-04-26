@@ -2,6 +2,7 @@
 
 import os
 import argparse
+import sys
 import psycopg
 import getpass
 
@@ -30,6 +31,9 @@ def create_dev_environment(connection_url):
 
     except (DuplicateDatabase, DuplicateObject) as e:
         print(f"DUPLICATION: {e}.")
+    except psycopg.errors.OperationalError as e:
+        print(f"Error: {e}, exit with code 1")
+        sys.exit(1)
     except Exception as e:
         print(f"An error occurred: {e}")
 
@@ -44,10 +48,11 @@ def create_dev_environment(connection_url):
                 print("INFO: GRANT_SCHEMA_PRIVILEGES")
                 cur.execute(SQL_ALTER_OWNER)
                 print("INFO: ALTER_OWNER")
+    except psycopg.errors.OperationalError as e:
+        print(f"Error: {e}, exit with code 1")
+        sys.exit(1)
     except Exception as e:
         print(f"An error occurred: {e}")
-
-    print(f"Database {database} created successfully.")
 
 
 if __name__ == "__main__":
