@@ -32,7 +32,6 @@ def create_dev_environment(connection_url):
         print(f"DUPLICATION: {e}.")
     except Exception as e:
         print(f"An error occurred: {e}")
-        conn.rollback()
 
     db_url = f"{connection_url}{database}"
     try:
@@ -47,7 +46,6 @@ def create_dev_environment(connection_url):
                 print("INFO: ALTER_OWNER")
     except Exception as e:
         print(f"An error occurred: {e}")
-        conn.rollback()
 
     print(f"Database {database} created successfully.")
 
@@ -64,18 +62,18 @@ if __name__ == "__main__":
         "-u",
         "--username",
         default="postgres",
-        help='username for connection or take value from POSTGRES_USER [default: "postgres"]',
+        help='username for connection or take value from TOOLS_POSTGRES_USER [default: "postgres"]',
     )
     parser.add_argument(
         "-q",
         "--quite",
         action="store_true",
-        help='ignore password input and take "postgres" value or from POSTGRES_PASSWORD [default: False]',
+        help='ignore password input and take "postgres" value or from TOOLS_POSTGRES_PASSWORD [default: False]',
     )
     args = parser.parse_args()
 
-    username = args.username or os.getenv("POSTGRES_USER", "postgres")
-    password = os.getenv("POSTGRES_PASSWORD", "postgres")
+    username = args.username or os.getenv("TOOLS_POSTGRES_USER", "postgres")
+    password = os.getenv("TOOLS_POSTGRES_PASSWORD", "postgres")
 
     if not args.quite:
         password = getpass.getpass() or password
