@@ -5,6 +5,7 @@ from pathlib import Path
 
 TRUE_VALUES = ["true", "t", "yes", "y", "1"]
 
+PROJECT_DIR = Path(__file__).resolve().parent.parent.parent
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -24,6 +25,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    #
+    "background_task",
+    "ninja",
+    #
     "phones",
 ]
 
@@ -93,5 +98,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
+
+STATIC_ROOT = PROJECT_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
