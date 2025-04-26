@@ -13,3 +13,5 @@ wheels/
 
 tmp/*
 !tmp/.gitkeep
+
+staticfiles/
