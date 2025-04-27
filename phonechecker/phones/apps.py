@@ -11,14 +11,4 @@ class PhonesConfig(AppConfig):
     name = "phones"
 
     def ready(self):
-        # from .containers import UserPhoneContainer
-
-        # user_phone_container = UserPhoneContainer()
-        # user_phone_container.wire(modules=["phones"])
-        #
-        # event_log_container = EventLogContainer()
-        # event_log_container.wire(modules=["phones"])
-
-        logger.info("Ready")
-
         return super().ready()

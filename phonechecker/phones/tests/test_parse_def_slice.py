@@ -1,10 +1,13 @@
+import logging
+import unittest
 from pathlib import Path
 from unittest import mock
-import aiofiles
-from aiofiles.threadpool import wrap as aiofiles_wrap
-import pytest
+from unittest.mock import mock_open, patch
 
-from unittest.mock import patch, mock_open
+import aiofiles
+import pytest
+from aiofiles.threadpool import wrap as aiofiles_wrap
+
 from phones.lib.def_number_parser import def_file_parser
 
 example = """АВС/ DEF;От;До;Емкость;Оператор;Регион;Территория ГАР;ИНН
@@ -15,19 +18,21 @@ example = """АВС/ DEF;От;До;Емкость;Оператор;Регион;
 900;0200000;0299999;100000;ООО "Т2 Мобайл";Челябинская обл.;Челябинская область;7743895280
 900;0300000;0499999;200000;ООО "ЕКАТЕРИНБУРГ-2000";Свердловская обл.;Свердловская область;6661079603
 """
-example_iter = iter(example.split("\n"))
+example_iter = iter(example.strip().split("\n"))
 
 aiofiles_wrap.register(mock.MagicMock)(
-    lambda *args, **kwargs: aiofiles.threadpool.binary.AsyncBufferedIOBase(
-        *args, **kwargs
-    )
+    lambda *a, **kw: aiofiles.threadpool.binary.AsyncBufferedIOBase(*a, **kw)
 )
 
 
-@pytest.mark.asyncio
-@patch("aiofiles.threadpool.sync_open", mock_open(read_data=example))
-async def test_def_file_parser(*args, **kwrags):
-    gen = def_file_parser(Path("mockfile"))
+logger = logging.getLogger(__name__)
 
-    async for item in gen:
-        print(item)
+
+class ProxyTest(unittest.IsolatedAsyncioTestCase):
+    @pytest.mark.asyncio
+    @patch("aiofiles.threadpool.sync_open", mock_open(read_data=example))
+    async def test_def_file_parser(*args, **kwrags):
+        gen = def_file_parser(Path("mockfile"))
+        counter = len([i async for i in gen])
+        expected_len = len(example.strip().split("\n")[1:])
+        assert counter == expected_len

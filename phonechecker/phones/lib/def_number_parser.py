@@ -1,23 +1,11 @@
-from dataclasses import dataclass
 import logging
 from pathlib import Path
 from typing import AsyncGenerator
 
 import aiofiles
+from phones.schemas import DefPhoneSchema
 
 logger = logging.getLogger(__name__)
-
-
-@dataclass(slots=True, frozen=True)
-class DefSchema:
-    avs: int
-    from_: int
-    to: int
-    capacity: int
-    operator: str
-    region: str
-    territory: str
-    inn: str
 
 
 async def def_file_parser(file: Path) -> AsyncGenerator:
@@ -26,7 +14,7 @@ async def def_file_parser(file: Path) -> AsyncGenerator:
 
         async for line in f:
             str_def = line.strip().split(";")
-            def_number = DefSchema(
+            def_number = DefPhoneSchema(
                 avs=int(str_def[0]),
                 from_=int(str_def[1]),
                 to=int(str_def[2]),

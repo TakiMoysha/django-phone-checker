@@ -20,39 +20,36 @@ def create_dev_environment(connection_url):
     SQL_GRANT_SCHEMA_PRIVILEGES = f"GRANT ALL ON SCHEMA public TO {username};"
     SQL_ALTER_OWNER = f"ALTER DATABASE {database} OWNER TO {username};"
 
-    try:
-        with psycopg.connect(connection_url) as conn:
-            conn.autocommit = True
-            with conn.cursor() as cur:
-                cur.execute(SQL_CREATE_USER)
-                print("INFO: CREATE_USER")
-                cur.execute(SQL_CREATE_DB)
-                print("INFO: CREATE_DB")
+    def _autocommit_exec(conn, sql):
+        conn.autocommit = True
+        try:
+            conn.execute(sql)
+        except (DuplicateDatabase, DuplicateObject) as e:
+            print(f"DUPLICATION: {e}.")
+        except psycopg.errors.OperationalError as e:
+            print(f"Error: {e}, exit with code 1")
+            sys.exit(1)
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            sys.exit(1)
 
-    except (DuplicateDatabase, DuplicateObject) as e:
-        print(f"DUPLICATION: {e}.")
-    except psycopg.errors.OperationalError as e:
-        print(f"Error: {e}, exit with code 1")
-        sys.exit(1)
-    except Exception as e:
-        print(f"An error occurred: {e}")
+    with psycopg.connect(connection_url) as conn:
+        _autocommit_exec(conn, SQL_CREATE_USER)
+        _autocommit_exec(conn, SQL_CREATE_DB)
 
     db_url = f"{connection_url}{database}"
     try:
         with psycopg.connect(db_url) as conn:
-            conn.autocommit = True
             with conn.cursor() as cur:
                 cur.execute(SQL_GRANT_PRIVILEGES)
-                print("INFO: GRANT_PRIVILEGES")
                 cur.execute(SQL_GRANT_SCHEMA_PRIVILEGES)
-                print("INFO: GRANT_SCHEMA_PRIVILEGES")
                 cur.execute(SQL_ALTER_OWNER)
-                print("INFO: ALTER_OWNER")
     except psycopg.errors.OperationalError as e:
         print(f"Error: {e}, exit with code 1")
         sys.exit(1)
     except Exception as e:
         print(f"An error occurred: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

@@ -29,7 +29,7 @@ class ProxyTest(unittest.IsolatedAsyncioTestCase):
         proxy_list = await get_proxy_from_env(env, separator)
         assert len(proxy_list) == 2
 
-    @pytest.mark.skip("work in progress")
+    @unittest.skip("work in progress")
     async def test_healthcheck_proxy(self):
         proxy_list = list(map(httpx.Proxy, [self.test_proxy_1, self.test_proxy_2]))
         for proxy in proxy_list:

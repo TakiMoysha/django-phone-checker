@@ -11,63 +11,53 @@
     <div class="row g-5">
       <div class="col-md-5 col-lg-4 order-md-last">
         <h4 class="d-flex justify-content-between align-items-center mb-3">
-          <span class="text-primary">Tips</span>
-          <span class="badge bg-primary rounded-pill">3</span>
+          <span class="text-primary">Server Info</span>
+          <span class="badge bg-primary rounded-pill">0</span>
         </h4>
 
-        <ul class="list-group mb-3">
+        <ul id="infoList" class="list-group mb-3" >
           <li class="list-group-item d-flex justify-content-between lh-sm">
             <div>
-              <h6 class="my-0">Second product</h6>
-              <small class="text-body-secondary">Brief description</small>
+              <h6 class="my-0">Updated:</h6>
             </div>
-            <span class="text-body-secondary">$8</span>
+            <span class="text-body-secondary">{{ last_updated_timestamp }}</span>
           </li>
           <li class="list-group-item d-flex justify-content-between lh-sm">
             <div>
-              <h6 class="my-0">Third item</h6>
-              <small class="text-body-secondary">Brief description</small>
+              <h6 class="my-0">Status:</h6>
             </div>
-            <span class="text-body-secondary">$5</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between bg-body-tertiary">
-            <div class="text-success">
-              <h6 class="my-0">Promo code</h6>
-              <small>EXAMPLECODE</small>
-            </div>
-            <span class="text-success">−$5</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between">
-            <span>Total (USD)</span>
-            <strong>$20</strong>
+            <span class="text-body-secondary">{{ server_status }}</span>
           </li>
         </ul>
 
-        <form class="card p-2">
+        <form id="update-database-form" class="card p-2">
           {% csrf_token %}
           <div class="input-group">
-            <input type="text" class="form-control" placeholder="Promo code">
-            <button type="submit" class="btn btn-secondary">Redeem</button>
+            <input type="text" class="form-control" placeholder="x-dev-token">
+            <button type="submit" class="btn btn-secondary">Request</button>
           </div>
         </form>
       </div>
+
       <div class="col-md-7 col-lg-8">
-        <h4 class="mb-3">Phon Checker Form</h4>
-        <form class="phone-checker-form" novalidate="">
+
+      <h4 class="mb-3">Phon Checker Form</h4>
+<!---->
+        <form id="phoneCheckerForm" novalidate>
+          {% csrf_token %}
           <div class="row g-3">
 
             <div class="col-12">
-              <label for="username" class="form-label">Phone Number</label>
+              <label for="phoneInput" class="form-label">Phone Number</label>
               <div class="input-group has-validation">
-                <span class="input-group-text">+</span>
-                <input type="tel" class="form-control" id="phone-input" placeholder="79998887766" required="">
+                <input type="tel" class="form-control" id="phoneInput" placeholder="+79998887766" required>
                 <div class="invalid-feedback">Number is required.</div>
               </div>
             </div>
 
             <div class="col-12">
-              <label for="email" class="form-label">Email <span class="text-body-secondary">(Optional)</span></label>
-              <input type="email" class="form-control" id="email" placeholder="you@example.com">
+              <label for="emailInput" class="form-label">Email <span class="text-body-secondary">(Optional)</span></label>
+              <input type="email" class="form-control" id="emailInput" placeholder="you@example.com">
               <div class="invalid-feedback">You can enter your email and we can notify you about updates.</div>
             </div>
 
@@ -75,25 +65,27 @@
 
           <div class="container">
             <div class="form-check">
-              <input type="checkbox" class="form-check-input" id="same-address">
-              <label class="form-check-label" for="same-address" required="">I agree with terms and conditions.</label>
+              <input type="checkbox" class="form-check-input" id="terms-input" required>
+              <label class="form-check-label" for="terms-input">I agree with terms and conditions.</label>
             </div>
             <div class="form-check">
-              <input type="checkbox" class="form-check-input" id="save-info">
-              <label class="form-check-label" for="save-info" required="">I'm not a robot, trust me.</label>
+              <input type="checkbox" class="form-check-input" id="protection-input" required>
+              <label class="form-check-label" for="protection-input">I'm not a robot, trust me.</label>
             </div>
             </div>
 
           <hr class="my-4">
 
-          <button class="w-100 btn btn-primary btn-lg" type="submit">Checkout</button>
+          <button id="submitBtn" class="w-100 btn btn-primary btn-lg" type="submit">Submit</button>
         </form>
+<!---->
+
       </div>
     </div>
   </main>
 
   <footer class="my-5 pt-5 text-body-secondary text-center text-small">
-    <p class="mb-1">© 2000–2025 moysha_dev</p>
+    <p class="mb-1">© 2025–2025 moysha_dev</p>
     <ul class="list-inline">
       <li class="list-inline-item"><a href="#">Privacy</a></li>
       <li class="list-inline-item"><a href="#">Terms</a></li>
@@ -103,50 +95,37 @@
 </div>
 
 <script>
-const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-document
-  .getElementById("phoneForm")
-  .addEventListener("submit", async function (e) {
-    e.preventDefault();
-    const phone = document.getElementById("phoneInput").value;
-    const email = document.getElementById("emailInput").value;
-    const responseDiv = document.getElementById("response");
-    responseDiv.innerHTML = "Загрузка...";
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-    try {
-      const res = await fetch("/api/phone/search?phone=" + phone, "POST", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrftoken,
-        },
-        mode: "same-origin",
-        body: JSON.stringify({ phone: phone, email: email }),
-      });
+  const form = document.getElementById("phoneCheckerForm");
+  const phoneInput = document.getElementById("phoneInput");
+  const emailInput = document.getElementById("emailInput");
+  const submitBtn = document.getElementById("submitBtn");
 
-      const data = await res.json();
-
-      if (res.ok) {
-        responseDiv.innerHTML = `
-                    <b>Номер найден:</b> ${data.exists ? "Да" : "Нет"}<br>
-                    <b>Оператор:</b> ${data.operator}<br>
-                    <b>Регион:</b> ${data.region}
-                `;
-      } else {
-        if (data.phone) {
-          responseDiv.innerHTML = `<span class="error">${data.phone.join("<br>")}</span>`;
-        } else {
-          responseDiv.innerHTML =
-            '<span class="error">Неизвестная ошибка</span>';
-        }
-      }
-    } catch (err) {
-      responseDiv.innerHTML = `<span class="error">Ошибка запроса: ${err.message}</span>`;
+  class API {
+    static async checkPhone(email, phone) {
+      const headers = { "x-csrftoken": csrftoken };
+      const body = { ...email, ...phone };
+      console.log(body)
+      return await fetch("/api/phone/search", "POST", { headers, body, signal: AbortSignal.timeout(5000) })
+        .then((res) => res.json())
+        .catch((err) => null);
     }
-  });
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const validator = form.checkValidity();
+    form.reportValidity();
+    if (!validator) return;
+
+    submitBtn.disabled = true;
+
+    await API.checkPhone(emailInput.value, phoneInput.value)
+      .finally(() => {
+        submitBtn.disabled = false;     
+      });
+  })
 </script>
 {% endblock %}
-
-
-
-

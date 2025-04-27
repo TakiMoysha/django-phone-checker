@@ -1,13 +1,14 @@
 set dotenv-load
 
-# example: just manage runserver
+# example: just manage runserver, just manage test phones
 manage *ARGS:
   uv run python phonechecker/manage.py {{ ARGS }}
 
-# example: just unittest -v -s
-unittest *ARGS:
+# example: just test -v -s -m tdd
+test *ARGS:
   uv run pytest {{ ARGS }}
 
-setup_db:
-  uv run tooling/setup_db.py -q
+# example: just setup_db -q
+setup_db *ARGS:
+  uv run tooling/setup_db.py {{ ARGS }}
 
