@@ -1,13 +1,10 @@
 import asyncio
+import logging
 import os
+import unittest
 from typing import override
 
 import httpx
-import unittest
-
-import logging
-
-import pytest
 
 from phones.lib.proxy import get_proxy_from_env, is_proxy_working
 

@@ -1,9 +1,8 @@
 import logging
 from dataclasses import dataclass
-from typing import Annotated
 
 from ninja import Schema
-from pydantic import AfterValidator, BeforeValidator, field_validator
+from pydantic import field_validator
 
 from phones.lib.sanitizers import sanitize_phone
 from phones.lib.validators import validate_phone_rus
@@ -33,14 +32,3 @@ class ErrorResponseSchema(Schema):
     error: int
     detail: str
 
-
-@dataclass(slots=True, frozen=True)
-class DefPhoneSchema:
-    avs: int
-    from_: int
-    to: int
-    capacity: int
-    operator: str
-    region: str
-    territory: str
-    inn: str

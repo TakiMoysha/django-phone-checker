@@ -1,3 +1,4 @@
+from logging import getLogger
 from ninja import NinjaAPI
 from ninja.errors import ValidationError
 from ninja.throttling import AnonRateThrottle
@@ -7,6 +8,8 @@ from phones.schemas import (
     PhoneInfoRequestSchema,
     PhoneInfoResponseSchema,
 )
+
+logger = getLogger(__file__)
 
 api_app = NinjaAPI(
     version="1.0",

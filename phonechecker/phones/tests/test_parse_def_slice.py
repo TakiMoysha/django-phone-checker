@@ -5,7 +5,6 @@ from unittest import mock
 from unittest.mock import mock_open, patch
 
 import aiofiles
-import pytest
 from aiofiles.threadpool import wrap as aiofiles_wrap
 
 from phones.lib.parsers import def_file_parser
@@ -27,8 +26,7 @@ aiofiles_wrap.register(mock.MagicMock)(
 )
 
 
-class ProxyTest(unittest.IsolatedAsyncioTestCase):
-    @pytest.mark.asyncio
+class TestDefFileParser(unittest.IsolatedAsyncioTestCase):
     @patch("aiofiles.threadpool.sync_open", mock_open(read_data=example))
     async def test_def_file_parser(*args, **kwrags):
         gen = def_file_parser(Path("mockfile"))

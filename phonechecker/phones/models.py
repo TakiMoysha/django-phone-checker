@@ -10,6 +10,17 @@ from phones.lib.validators import validate_phone_rus
 logger = logging.getLogger(__name__)
 
 
+class DEFPhone(models.Model):
+    avs = models.IntegerField()
+    start = models.IntegerField()
+    to = models.IntegerField()
+    capacity = models.IntegerField()
+    operator = models.TextField()
+    region = models.CharField(max_length=255)
+    territory = models.CharField(max_length=255)
+    inn = models.CharField(max_length=255)
+
+
 class PhoneNumber(models.Model):
     phone_number = models.CharField(
         max_length=16,

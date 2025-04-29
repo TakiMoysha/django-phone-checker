@@ -1,7 +1,6 @@
 import os
-from dataclasses import dataclass, field
-from functools import lru_cache
 from pathlib import Path
+
 
 TRUE_VALUES = ["true", "t", "yes", "y", "1"]
 
@@ -63,27 +62,37 @@ TEMPLATES = [
 WSGI_APPLICATION = "app.wsgi.application"
 ASGI_APPLICATION = "app.asgi.application"
 
-ENABLE_POSTGRES = os.getenv("ENABLE_POSTGRES", "true").lower() in TRUE_VALUES
+USE_TEST_DATABASE = os.getenv("USE_TEST_DATABASE", "false").lower() in TRUE_VALUES
 
-if ENABLE_POSTGRES:
+DB_DEFAULT = "default"
+DB_INMEMORY = "db_inmemory"
+
+if USE_TEST_DATABASE:
     DATABASES = {
-        "default": {
+        DB_DEFAULT: {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": ":memory:",
+        },
+        DB_INMEMORY: {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": "tmp/registry/def-life.sqlite3?mode=memory",
+        },
+    }
+else:
+    DATABASES = {
+        DB_DEFAULT: {
             "ENGINE": "django.db.backends.postgresql",
             "NAME": os.getenv("POSTGRES_DB", "phonechecker"),
             "USER": os.getenv("POSTGRES_USER", "phonechecker"),
             "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
             "HOST": os.getenv("POSTGRES_HOST", "localhost"),
             "PORT": os.getenv("POSTGRES_PORT", 5432),
-        }
-    }
-else:
-    DATABASES = {
-        "default": {
+        },
+        DB_INMEMORY: {
             "ENGINE": "django.db.backends.sqlite3",
-            "NAME": ":memory:",
-        }
+            "NAME": "tmp/registry/def-life.sqlite3?mode=memory",
+        },
     }
-
 
 CACHES = {
     "default": {
@@ -128,6 +137,13 @@ LOGGING = {
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "formatters": {
+        "verbose": {
+            "format": "[{asctime}][{levelname}][{module}] {message}",
+            "style": "{",
         },
     },
     "root": {
