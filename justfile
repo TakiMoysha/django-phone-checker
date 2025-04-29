@@ -4,9 +4,10 @@ set dotenv-load
 manage *ARGS:
   uv run python phonechecker/manage.py {{ ARGS }}
 
-# example: just test -v -s -m tdd
+# example: just test
 test *ARGS:
-  uv run pytest {{ ARGS }}
+  ENABLE_POSTGRES=false
+  uv run python phonechecker/manage.py test {{ ARGS }}
 
 # example: just setup_db -q
 setup_db *ARGS:

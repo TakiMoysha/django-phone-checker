@@ -8,7 +8,8 @@ from django.core.exceptions import ValidationError
 logger = logging.getLogger(__name__)
 
 
-def validate_phone_russian(value: Any):
+def validate_phone_rus(value: Any):
+    logger.debug("Validating phone number: %s", value)
     try:
         number = phonenumbers.parse(value, "RU")
     except Exception as err:

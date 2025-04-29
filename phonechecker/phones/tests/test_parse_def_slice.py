@@ -8,7 +8,9 @@ import aiofiles
 import pytest
 from aiofiles.threadpool import wrap as aiofiles_wrap
 
-from phones.lib.def_number_parser import def_file_parser
+from phones.lib.parsers import def_file_parser
+
+logger = logging.getLogger(__name__)
 
 example = """АВС/ DEF;От;До;Емкость;Оператор;Регион;Территория ГАР;ИНН
 900;0000000;0061999;62000;ООО "Т2 МОБАЙЛ";Краснодарский край;Краснодарский край;7743895280
@@ -23,9 +25,6 @@ example_iter = iter(example.strip().split("\n"))
 aiofiles_wrap.register(mock.MagicMock)(
     lambda *a, **kw: aiofiles.threadpool.binary.AsyncBufferedIOBase(*a, **kw)
 )
-
-
-logger = logging.getLogger(__name__)
 
 
 class ProxyTest(unittest.IsolatedAsyncioTestCase):

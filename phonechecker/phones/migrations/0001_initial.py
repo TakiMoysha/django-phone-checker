@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
             name='PhoneNumber',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('phone_number', models.CharField(max_length=16, validators=[phones.lib.validators.validate_phone_russian])),
+                ('phone_number', models.CharField(max_length=16, validators=[phones.lib.validators.validate_phone_rus])),
             ],
         ),
     ]

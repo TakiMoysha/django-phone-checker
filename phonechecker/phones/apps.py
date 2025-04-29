@@ -1,4 +1,5 @@
 import logging
+from typing import override
 
 from django.apps import AppConfig
 
@@ -10,5 +11,9 @@ class PhonesConfig(AppConfig):
     events = []
     name = "phones"
 
+    @override
     def ready(self):
+        # from phones.tasks import update_database_from_registry
+        #
+        # update_database_from_registry()
         return super().ready()

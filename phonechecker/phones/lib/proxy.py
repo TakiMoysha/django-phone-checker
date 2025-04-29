@@ -27,11 +27,9 @@ async def get_proxy_from_env(
     try:
         raw_proxy = os.getenv(env, "")
         proxy = tuple(map(httpx.Proxy, raw_proxy.split(separator)))
-        logger.debug("Proxy: %s", proxy)
         return proxy
     except httpx.UnsupportedProtocol as err:
-        logger.error("Error parsing proxy: %s", raw_proxy)
-        logger.error("Traceback: %s", err)
+        logger.error("Error parsing proxy: %s", raw_proxy, exc_info=err)
         return ()
 
 
@@ -51,7 +49,6 @@ async def is_proxy_working(p: httpx.Proxy) -> bool:
     ) as client:
         try:
             response = await client.get("https://8.8.8.8", timeout=10)
-            logger.info("Healthcheck: %s, headers: %s", response, response.headers)
             return True
         except httpx.ProxyError as err:
             logger.warning("Proxy not working: %s", err)

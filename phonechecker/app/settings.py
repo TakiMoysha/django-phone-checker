@@ -63,8 +63,9 @@ TEMPLATES = [
 WSGI_APPLICATION = "app.wsgi.application"
 ASGI_APPLICATION = "app.asgi.application"
 
-ENABLE_POSTGRES = os.getenv("ENABLE_POSTGRES", "false").lower() in TRUE_VALUES
-if ENABLE_POSTGRES or not DEBUG:
+ENABLE_POSTGRES = os.getenv("ENABLE_POSTGRES", "true").lower() in TRUE_VALUES
+
+if ENABLE_POSTGRES:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",

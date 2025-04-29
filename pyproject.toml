@@ -22,9 +22,11 @@ dependencies = [
 [dependency-groups]
 dev = [
     "bpython>=0.25",
+    "faker>=37.1.0",
     "pytest>=8.3.5",
     "pytest-asyncio>=0.26.0",
     "pytest-django>=4.11.1",
+    "unittest-parametrize>=1.6.0",
 ]
 
 [tool.mypy]
@@ -32,3 +34,4 @@ plugins = ["mypy_django_plugin.main"]
 
 [tool.django-stubs]
 django_settings_module = "phonechecker.app.settings"
+
