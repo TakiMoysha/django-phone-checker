@@ -5,11 +5,12 @@ from ninja.throttling import AnonRateThrottle
 
 from phones.schemas import (
     ErrorResponseSchema,
-    PhoneInfoRequestSchema,
-    PhoneInfoResponseSchema,
 )
 
+from .api import phones_router
+
 logger = getLogger(__file__)
+
 
 api_app = NinjaAPI(
     version="1.0",
@@ -36,14 +37,4 @@ def validation_error(request, exception):
     )
 
 
-@api_app.post(
-    "/phones/search",
-    response={200: PhoneInfoResponseSchema, 400: ErrorResponseSchema},
-)
-async def search_phone_number(request, data: PhoneInfoRequestSchema):
-    return 200, PhoneInfoResponseSchema(
-        phone="",
-        operator="MTS",
-        region="Russia",
-        last_updated="",
-    )
+api_app.add_router(r"phones", phones_router)

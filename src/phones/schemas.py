@@ -6,6 +6,7 @@ from pydantic import field_validator
 
 from phones.lib.sanitizers import sanitize_phone
 from phones.lib.validators import validate_phone_rus
+from phones.models import DEFPhone
 
 logger = logging.getLogger(__name__)
 
@@ -31,4 +32,3 @@ class PhoneInfoResponseSchema(Schema):
 class ErrorResponseSchema(Schema):
     error: int
     detail: str
-

@@ -1,13 +1,22 @@
-import os
 import logging
+import os
 from typing import override
+
+from django.core.files.storage import FileSystemStorage
 from django.core.files.storage.base import Storage
 from django.db import models
 
-from phones.storage import registry_files_storage
 from phones.lib.validators import validate_phone_rus
 
+# ====================================================================
+
 logger = logging.getLogger(__name__)
+
+# ====================================================================
+
+registry_files_storage = FileSystemStorage(location="tmp/registry")
+
+# ====================================================================
 
 
 class DEFPhone(models.Model):
@@ -19,6 +28,15 @@ class DEFPhone(models.Model):
     region = models.CharField(max_length=255)
     territory = models.CharField(max_length=255)
     inn = models.CharField(max_length=255)
+
+    @override
+    def __str__(self) -> str:
+        return f"DEFPhone<{self.avs};{self.start};{self.to};{self.capacity};{self.operator};{self.region};{self.territory};{self.inn}>"
+
+    class Meta:
+        verbose_name = "DEFPhone"
+        verbose_name_plural = "DEFPhones"
+        ordering = ["-avs"]
 
 
 class PhoneNumber(models.Model):

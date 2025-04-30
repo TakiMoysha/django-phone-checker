@@ -75,7 +75,11 @@ if USE_TEST_DATABASE:
         },
         DB_INMEMORY: {
             "ENGINE": "django.db.backends.sqlite3",
-            "NAME": "tmp/registry/def-life.sqlite3?mode=memory",
+            "NAME": ":memory:",
+            "OPTIONS": {
+                "init_command": "PRAGMA journal_mode=WAL;",
+                "transaction_mode": "IMMEDIATE",  # TODO: check how many errors while first loaded data
+            },
         },
     }
 else:
@@ -90,7 +94,11 @@ else:
         },
         DB_INMEMORY: {
             "ENGINE": "django.db.backends.sqlite3",
-            "NAME": "tmp/registry/def-life.sqlite3?mode=memory",
+            "NAME": ":memory:",
+            "OPTIONS": {
+                "init_command": "PRAGMA journal_mode=WAL;",
+                "transaction_mode": "IMMEDIATE",  # TODO: check how many errors while first loaded data
+            },
         },
     }
 
