@@ -6,7 +6,7 @@ from django.core.files.storage import FileSystemStorage
 from django.core.files.storage.base import Storage
 from django.db import models
 
-from phones.lib.validators import validate_phone_rus
+from phones.lib.validators import model_validate_phone_rus
 
 # ====================================================================
 
@@ -44,7 +44,7 @@ class PhoneNumber(models.Model):
         max_length=16,
         blank=False,
         null=False,
-        validators=[validate_phone_rus],
+        validators=[model_validate_phone_rus],
     )
 
     @override

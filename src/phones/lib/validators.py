@@ -1,6 +1,8 @@
 import logging
 from typing import Any, Callable
 
+from django.core.exceptions import ValidationError as DjValidationError
+
 import phonenumbers
 from pydantic import ValidatorFunctionWrapHandler
 
@@ -22,3 +24,12 @@ def validate_phone_rus(value: Any) -> tuple[bool, str | None]:
 
     logger.debug("Phone number parsed: %s", number)
     return (value, None)
+
+
+def model_validate_phone_rus(value: str) -> str:
+    (is_valid, error) = validate_phone_rus(value)
+
+    if not is_valid:
+        raise DjValidationError(error or "Invalid phone number")
+
+    return value

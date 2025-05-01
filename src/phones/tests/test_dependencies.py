@@ -11,4 +11,3 @@ class TestDependencies(unittest.IsolatedAsyncioTestCase):
     @unittest.skip("dishka work in progress")
     async def test_service_container(self):
         repository = repository_containers.get(repos.MaterializedRepostiory)
-        logger.debug("11111: ", repository)

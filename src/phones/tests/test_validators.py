@@ -2,7 +2,6 @@ import logging
 
 from unittest_parametrize import ParametrizedTestCase, parametrize
 
-from phones.lib import validators
 from phones.schemas import PhoneInfoRequestSchema
 
 logger = logging.getLogger(__name__)
@@ -20,7 +19,7 @@ class TestSearchPhone(ParametrizedTestCase):
     )
     def test_should_catch_bad_phones(self, phone: str, email: str | None = None):
         self.assertRaises(
-            validators.ValidationError,
+            ValueError,
             lambda: PhoneInfoRequestSchema(phone=phone, email=email),
         )
 
