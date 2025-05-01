@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Protocol, runtime_checkable
 from logging import getLogger
 from asgiref.sync import sync_to_async
 from django.db.models.expressions import RawSQL
@@ -6,10 +6,15 @@ from django.db.models.expressions import RawSQL
 logger = getLogger(__name__)
 
 
-class BaseRepository: ...
+@runtime_checkable
+class ISQLRepository(Protocol):
+    async def raw_sql(self, sql: str) -> RawSQL: ...
+    async def create(self): ...
+    async def update(self): ...
+    async def drop(self): ...
 
 
-class MaterializedRepostiory(BaseRepository):
+class MaterializedRepostiory(ISQLRepository):
     name: Annotated[str, "this name was given to materialized view"]
 
     def __init__(self, name: str) -> None:
@@ -18,7 +23,7 @@ class MaterializedRepostiory(BaseRepository):
     async def raw_sql(self, sql: str) -> RawSQL:
         return await sync_to_async(lambda: RawSQL(sql, ()))()
 
-    async def create_view(self):
+    async def create(self):
         sql = """
             CREATE MATERIALIZED VIEW mv_def_phones AS
             SELECT id, avs, start, to, capacity, operator, region, territory, inn
@@ -27,12 +32,12 @@ class MaterializedRepostiory(BaseRepository):
         mv_res = await sync_to_async(lambda: RawSQL(sql, ()))()
         logger.debug("Materialized view created: %s", mv_res)
 
-    async def update_view(self):
+    async def update(self):
         sql = f"REFRESH MATERIALIZED VIEW {self.name}"
         mv_res = await sync_to_async(lambda: RawSQL(sql, ()))()
         logger.debug("Materialized view updated: %s", mv_res)
 
-    async def drop_view(self):
+    async def drop(self):
         sql = f"DROP MATERIALIZED VIEW IF EXISTS {self.name}"
         mv_res = await sync_to_async(lambda: RawSQL(sql, ()))()
         logger.debug("Materialized view dropped: %s", mv_res)

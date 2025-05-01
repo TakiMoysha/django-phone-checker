@@ -2,24 +2,26 @@ import asyncio
 from datetime import datetime
 from logging import getLogger
 from pathlib import Path
-from typing import Annotated
-from asgiref.sync import sync_to_async
 
-from django.core.files.storage import FileSystemStorage
-from django.db.models.expressions import RawSQL
 import httpx
+from asgiref.sync import sync_to_async
+from dishka import FromDishka
+from django.core.files.storage import FileSystemStorage
 
 from phones.consts import REGISTRY_FILES_URLS
 from phones.lib.parsers import def_file_parser
 from phones.models import DEFPhone, RegistryFile
-from phones.repositories import MaterializedRepostiory
 from phones.schemas import PhoneInfoRequestSchema
 
+from .repositories import ISQLRepository, MaterializedRepostiory
 
 logger = getLogger(__name__)
 
 
-async def find_def_phone_by_number(data: PhoneInfoRequestSchema) -> DEFPhone: ...
+async def find_def_phone_by_number(
+    data: PhoneInfoRequestSchema,
+    repository: FromDishka[ISQLRepository],
+): ...
 
 
 async def create_materialized_def_phones(): ...
@@ -27,7 +29,7 @@ async def create_materialized_def_phones(): ...
 
 async def load_registry_from_file(
     file: Path,
-    repository: Annotated[MaterializedRepostiory, "provide from dishka"],
+    repository: MaterializedRepostiory,
     *,
     from_scratch=True,
 ):
@@ -37,7 +39,7 @@ async def load_registry_from_file(
     entries = [entry async for entry in def_file_parser(file)]
     logger.info(f"Loaded {file.name}: {len(entries)} entries")
     _ = await sync_to_async(lambda: DEFPhone.objects.bulk_create(objs=entries))()
-    _ = await repository.create_view()
+    _ = await repository.create()
     mv_res = await repository.raw_sql(f"SELECT * FROM {repository.name} LIMIT 10")
     logger.debug("Materialized view content: %s", mv_res)
 

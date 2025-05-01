@@ -5,7 +5,7 @@ from dishka import make_container
 from dishka.integrations.base import wrap_injection
 
 from django.http import HttpRequest
-from django.utils.deprecation import MiddlewareMixin
+from django.utils.deprecation import MiddlewareMixin as DjangoMiddlewareMixin
 
 T = TypeVar("T")
 P = ParamSpec("P")
@@ -13,7 +13,9 @@ P = ParamSpec("P")
 logger = getLogger(__name__)
 
 
-def inject(fn: Callable[P, T]) -> Callable[[HttpRequest, P.args, P.kwargs], T]:
+def inject(fn: Callable[P, T]):
+    """not-finished, bugs with django-ninja"""
+
     @wraps(fn)
     def wrapper(request: HttpRequest, *args: P.args, **kwargs: P.kwargs) -> T:
         try:
@@ -22,7 +24,9 @@ def inject(fn: Callable[P, T]) -> Callable[[HttpRequest, P.args, P.kwargs], T]:
             msg = "Dishka container not implemented, added middleware to MIDDLEWARE"
             raise NotImplementedError(msg) from err
 
+        logger.debug("request: %s", request)
         logger.debug("container: %s", request_container)
+        logger.debug("params: %s", (args, kwargs))
         with request_container() as container:
             injected_fn = wrap_injection(
                 func=fn,
@@ -35,7 +39,7 @@ def inject(fn: Callable[P, T]) -> Callable[[HttpRequest, P.args, P.kwargs], T]:
     return wrapper
 
 
-class DishkaContainerMiddleware(MiddlewareMixin):
+class DishkaForDjangoMiddleware(DjangoMiddlewareMixin):
     async_capable = False
     sync_capable = True
 

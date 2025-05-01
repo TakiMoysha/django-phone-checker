@@ -8,7 +8,8 @@ manage *ARGS:
 
 # example: just test phones -k TestServerTasks -v 2
 test *ARGS:
-  USE_TEST_DATABASE=true \\
+  USE_TEST_DATABASE=true \\ # set sqlite as database
+  TEST_WITH_DATABASE=false \\ # ignore service-functions when required postgres
   uv run python {{APP_DIR}}/manage.py test {{ ARGS }}
 
 # example: just setup_db -q

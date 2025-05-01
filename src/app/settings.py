@@ -42,7 +42,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     #
-    "phones.contrib.dishka.DishkaContainerMiddleware",
+    # "phones.contrib.dishka.DishkaContainerMiddleware",
 ]
 
 ROOT_URLCONF = "app.urls"

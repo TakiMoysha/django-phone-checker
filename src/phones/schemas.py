@@ -1,9 +1,8 @@
 import logging
-from dataclasses import dataclass
 from typing import Annotated
 
 from ninja import Schema
-from pydantic import BeforeValidator, Field, field_validator, EmailStr
+from pydantic import BeforeValidator, field_validator, EmailStr
 
 from phones.lib.sanitizers import sanitize_phone
 from phones.lib.validators import validate_phone_rus
