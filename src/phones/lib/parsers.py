@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import AsyncGenerator
 
 import aiofiles
+from pydantic import ValidationError
 from phones.models import DEFPhone
 
 logger = logging.getLogger(__name__)

@@ -1,6 +1,7 @@
 from logging import getLogger
 from ninja import Router
 
+from phones.contrib.dishka import inject
 from phones.schemas import (
     ErrorResponseSchema,
     PhoneInfoRequestSchema,
@@ -17,6 +18,7 @@ phones_router = Router()
     "/search",
     response={200: PhoneInfoResponseSchema, 400: ErrorResponseSchema},
 )
+@inject
 async def search_phone_number(request, data: PhoneInfoRequestSchema):
     result = find_def_phone_by_number(data)
     return 200, PhoneInfoResponseSchema(

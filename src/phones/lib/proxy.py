@@ -17,8 +17,8 @@ async def get_proxy_from_env(
     Example: HTTP_PROXY="http://0.0.0.0:3128,http://127.0.0.1:3128"
 
     Args:
-        env (str, optional): _description_. Defaults to "HTTP_PROXY".
-        separator (str, optional): _description_. Defaults to ",".
+        env (str, optional): Defaults to "HTTP_PROXY".
+        separator (str, optional): Defaults to ",".
 
     Returns:
         tuple[httpx.Proxy]: list of proxies from env

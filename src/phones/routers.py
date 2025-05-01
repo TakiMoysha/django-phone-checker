@@ -15,24 +15,37 @@ logger = getLogger(__file__)
 api_app = NinjaAPI(
     version="1.0",
     title="Phone Checker API",
-    throttle=AnonRateThrottle(rate="1/s"),
+    throttle=AnonRateThrottle(rate="10/s"),
 )
 
 
 @api_app.exception_handler(Exception)
-def unexpected_error(request, exception):
+def unexpected_error(request, exception: Exception):
+    logger.warning("Unexpected error", exc_info=exception)
     return api_app.create_response(
         request,
-        ErrorResponseSchema(error=500, detail=exception.message),
+        ErrorResponseSchema(error=500, details="Something went wrong"),
         status=500,
     )
 
 
+def parse_pydantic_error(exception: ValidationError):
+    msg = {}
+    for error in exception.errors:
+        match error["type"]:
+            case "value_error":
+                msg[error["loc"][2]] = error["msg"]
+
+    return msg
+
+
 @api_app.exception_handler(ValidationError)
-def validation_error(request, exception):
+def validation_error(request, exception: ValidationError):
+    logger.warning("Validation error", exc_info=exception)
+    logger.debug("Validation error", exc_info=exception)
     return api_app.create_response(
         request,
-        ErrorResponseSchema(error=400, detail=exception.message),
+        ErrorResponseSchema(error=400, details=parse_pydantic_error(exception)),
         status=400,
     )
 
