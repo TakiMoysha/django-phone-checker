@@ -52,29 +52,6 @@ class PhoneNumber(models.Model):
         return f"PhoneNumber<{self.phone_number}>"
 
 
-class EventLog(models.Model):
-    datetime = models.DateTimeField(
-        verbose_name="Datetime of action",
-        auto_now_add=True,
-    )
-    action = models.CharField(
-        verbose_name="What the action",
-        max_length=255,
-    )
-    log = models.TextField(
-        verbose_name="Result of action",
-        blank=True,
-        null=True,
-    )
-
-    class Meta:
-        ordering = ["-datetime"]
-
-    @override
-    def __str__(self) -> str:
-        return f"EventLog<{self.action}:{self.datetime.strftime('%d.%m.%Y %H:%M')}>"
-
-
 class RegistryFile(models.Model):
     file = models.FileField(
         storage=registry_files_storage,
@@ -100,3 +77,29 @@ class RegistryFile(models.Model):
         logger.info(f"Deleting file: {self.file}")
         os.rename(self.file.path, f"{self.file.path}.del")
         super().delete(*args, **kwargs)
+
+
+# ====================================================================
+
+
+class EventLog(models.Model):
+    datetime = models.DateTimeField(
+        verbose_name="Datetime of action",
+        auto_now_add=True,
+    )
+    action = models.CharField(
+        verbose_name="What the action",
+        max_length=255,
+    )
+    log = models.TextField(
+        verbose_name="Result of action",
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        ordering = ["-datetime"]
+
+    @override
+    def __str__(self) -> str:
+        return f"EventLog<{self.action}:{self.datetime.strftime('%d.%m.%Y %H:%M')}>"

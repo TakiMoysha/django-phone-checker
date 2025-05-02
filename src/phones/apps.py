@@ -18,7 +18,9 @@ def registrate_tasks() -> None:
 
 def connect_phones_signals() -> None:
     from background_task.models import CompletedTask
+    from phones.signals import *
     # TODO: connect CompletedTask("update_registry") and `REFRESH MATERIALIZE VIEW phones_defphone`
+
 
 
 class PhonesConfig(AppConfig):

@@ -26,10 +26,8 @@ def validate_phone_rus(value: Any) -> tuple[bool, str | None]:
     return (value, None)
 
 
-def model_validate_phone_rus(value: str) -> str:
+def model_validate_phone_rus(value: str) -> None:
     (is_valid, error) = validate_phone_rus(value)
 
     if not is_valid:
         raise DjValidationError(error or "Invalid phone number")
-
-    return value
